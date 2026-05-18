@@ -105,6 +105,11 @@
     .form-grid {
       display: grid;
       gap: 10px;
+      min-width: 0;
+    }
+
+    .field {
+      min-width: 0;
     }
 
     .field label {
@@ -119,6 +124,8 @@
 
     .field input {
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
       min-height: 48px;
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -126,6 +133,11 @@
       color: var(--text);
       padding: 12px 14px;
       outline: none;
+    }
+
+    .field input[type="date"] {
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     .field input:focus {
@@ -292,7 +304,7 @@
 
     @media (min-width: 480px) {
       .form-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       }
 
       .field.name {
