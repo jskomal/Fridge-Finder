@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#22c55e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Fridge Finder" />
+  <title>Fridge Finder</title>
+
+  <style>
+    :root {
+      --bg: #f7faf7;
+      --card: #ffffff;
+      --text: #102015;
+      --muted: #627066;
+      --line: #dde8df;
+      --green: #22c55e;
+      --green-dark: #15803d;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --shadow: 0 12px 30px rgba(16, 32, 21, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.18), transparent 28rem),
+        var(--bg);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(100%, 560px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: max(18px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 2px 18px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .title-block p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      font-size: 1.55rem;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(221, 232, 223, 0.92);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      backdrop-filter: blur(18px);
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fbfdfb;
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+    }
+
+    .primary-btn {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 17px;
+      background: var(--green);
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 12px 22px rgba(34, 197, 94, 0.22);
+    }
+
+    .primary-btn:active {
+      transform: scale(0.985);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin: 14px 0;
+    }
+
+    .tab {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      border-color: var(--green);
+      background: #dcfce7;
+      color: var(--green-dark);
+    }
+
+    .summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 4px 0 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      display: grid;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 8px 18px rgba(16, 32, 21, 0.05);
+    }
+
+    .item-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item-name {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .item-qty {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .pill {
+      flex: 0 0 auto;
+      align-self: flex-start;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .pill.good {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .pill.soon {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .pill.urgent,
+    .pill.expired {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .item-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .delete-btn {
+      border: 0;
+      border-radius: 999px;
+      background: #f3f6f3;
+      color: #9b1c1c;
+      padding: 8px 11px;
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .empty {
+      padding: 26px 18px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .empty strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 1.05rem;
+    }
+
+    .install-card {
+      display: none;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .install-card.show {
+      display: block;
+    }
+
+    .install-card strong {
+      color: var(--text);
+    }
+
+    @media (min-width: 480px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .field.name {
+        grid-column: 1 / -1;
+      }
+
+      .primary-btn {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div class="title-block">
+        <h1>Fridge Finder</h1>
+        <p>Track food before it goes bad.</p>
+      </div>
+      <div class="badge" aria-hidden="true">🥬</div>
+    </header>
+
+    <section class="panel" aria-label="Add fridge item">
+      <form id="itemForm" class="form-grid">
+        <div class="field name">
+          <label for="name">Food name</label>
+          <input id="name" name="name" type="text" placeholder="Milk, chicken, spinach" autocomplete="off" required />
+        </div>
+
+        <div class="field">
+          <label for="expirationDate">Expiration date</label>
+          <input id="expirationDate" name="expirationDate" type="date" required />
+        </div>
+
+        <div class="field">
+          <label for="quantity">Quantity</label>
+          <input id="quantity" name="quantity" type="text" placeholder="1 carton, 2 lbs, half bag" autocomplete="off" required />
+        </div>
+
+        <button class="primary-btn" type="submit">Add Item</button>
+      </form>
+    </section>
+
+    <nav class="tabs" aria-label="Expiration filters">
+      <button class="tab active" type="button" data-filter="all">All</button>
+      <button class="tab" type="button" data-filter="7">7 days</button>
+      <button class="tab" type="button" data-filter="3">3 days</button>
+      <button class="tab" type="button" data-filter="1">1 day</button>
+      <button class="tab" type="button" data-filter="expired">Expired</button>
+    </nav>
+
+    <section class="panel">
+      <div class="summary">
+        <span id="summaryText">0 items</span>
+        <span id="todayText"></span>
+      </div>
+      <div id="list" class="list" aria-live="polite"></div>
+    </section>
+
+    <section id="installCard" class="panel install-card">
+      <strong>Save to your iPhone home screen:</strong><br />
+      Open this page in Safari, tap Share, then tap Add to Home Screen.
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "fridgeFinderItems";
+
+    const form = document.getElementById("itemForm");
+    const list = document.getElementById("list");
+    const tabs = document.querySelectorAll(".tab");
+    const summaryText = document.getElementById("summaryText");
+    const todayText = document.getElementById("todayText");
+    const installCard = document.getElementById("installCard");
+
+    let activeFilter = "all";
+    let items = loadItems();
+
+    function loadItems() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveItems() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function getTodayDateOnly() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function parseLocalDate(dateString) {
+      const [year, month, day] = dateString.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    function formatDate(dateString) {
+      return parseLocalDate(dateString).toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function getDaysUntil(dateString) {
+      const today = getTodayDateOnly();
+      const expiration = parseLocalDate(dateString);
+      const msPerDay = 1000 * 60 * 60 * 24;
+      return Math.round((expiration - today) / msPerDay);
+    }
+
+    function getStatus(daysUntil) {
+      if (daysUntil < 0) return { text: "Expired", className: "expired" };
+      if (daysUntil === 0) return { text: "Today", className: "urgent" };
+      if (daysUntil === 1) return { text: "1 day", className: "urgent" };
+      if (daysUntil <= 3) return { text: `${daysUntil} days`, className: "soon" };
+      if (daysUntil <= 7) return { text: `${daysUntil} days`, className: "soon" };
+      return { text: `${daysUntil} days`, className: "good" };
+    }
+
+    function getFilteredItems() {
+      const sortedItems = [...items].sort((a, b) => {
+        return parseLocalDate(a.expirationDate) - parseLocalDate(b.expirationDate);
+      });
+
+      if (activeFilter === "all") return sortedItems;
+
+      return sortedItems.filter((item) => {
+        const daysUntil = getDaysUntil(item.expirationDate);
+
+        if (activeFilter === "expired") return daysUntil < 0;
+        return daysUntil >= 0 && daysUntil <= Number(activeFilter);
+      });
+    }
+
+    function render() {
+      const filteredItems = getFilteredItems();
+      const label = filteredItems.length === 1 ? "item" : "items";
+
+      todayText.textContent = getTodayDateOnly().toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric"
+      });
+
+      summaryText.textContent = `${filteredItems.length} ${label}`;
+      list.innerHTML = "";
+
+      if (filteredItems.length === 0) {
+        list.innerHTML = `
+          <div class="empty">
+            <strong>No food found here.</strong>
+            Add an item or switch filters.
+          </div>
+        `;
+        return;
+      }
+
+      filteredItems.forEach((item) => {
+        const daysUntil = getDaysUntil(item.expirationDate);
+        const status = getStatus(daysUntil);
+        const card = document.createElement("article");
+        card.className = "item";
+
+        card.innerHTML = `
+          <div class="item-main">
+            <div>
+              <h2 class="item-name"></h2>
+              <p class="item-qty"></p>
+            </div>
+            <span class="pill ${status.className}">${status.text}</span>
+          </div>
+          <div class="item-meta">
+            <span>Expires ${formatDate(item.expirationDate)}</span>
+            <button class="delete-btn" type="button">Delete</button>
+          </div>
+        `;
+
+        card.querySelector(".item-name").textContent = item.name;
+        card.querySelector(".item-qty").textContent = item.quantity;
+        card.querySelector(".delete-btn").addEventListener("click", () => deleteItem(item.id));
+
+        list.appendChild(card);
+      });
+    }
+
+    function addItem(event) {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const item = {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        name: formData.get("name").trim(),
+        expirationDate: formData.get("expirationDate"),
+        quantity: formData.get("quantity").trim()
+      };
+
+      if (!item.name || !item.expirationDate || !item.quantity) return;
+
+      items.push(item);
+      saveItems();
+      form.reset();
+      document.getElementById("name").focus();
+      render();
+    }
+
+    function deleteItem(id) {
+      items = items.filter((item) => item.id !== id);
+      saveItems();
+      render();
+    }
+
+    function setActiveFilter(filter) {
+      activeFilter = filter;
+
+      tabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.filter === filter);
+      });
+
+      render();
+    }
+
+    function setupPwaFiles() {
+      const iconSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <rect width="512" height="512" rx="112" fill="#22c55e"/>
+          <text x="50%" y="57%" text-anchor="middle" font-size="260" font-family="Arial">🥬</text>
+        </svg>
+      `;
+
+      const iconUrl = URL.createObjectURL(new Blob([iconSvg], { type: "image/svg+xml" }));
+      const manifest = {
+        name: "Fridge Finder",
+        short_name: "Fridge",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#f7faf7",
+        theme_color: "#22c55e",
+        icons: [
+          {
+            src: iconUrl,
+            sizes: "512x512",
+            type: "image/svg+xml",
+            purpose: "any maskable"
+          }
+        ]
+      };
+
+      const manifestUrl = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" }));
+      const manifestLink = document.createElement("link");
+      manifestLink.rel = "manifest";
+      manifestLink.href = manifestUrl;
+      document.head.appendChild(manifestLink);
+
+      const appleIcon = document.createElement("link");
+      appleIcon.rel = "apple-touch-icon";
+      appleIcon.href = iconUrl;
+      document.head.appendChild(appleIcon);
+    }
+
+    function setupServiceWorker() {
+      if (!("serviceWorker" in navigator)) return;
+
+      const workerCode = `
+        const CACHE_NAME = "fridge-finder-v1";
+        self.addEventListener("install", event => {
+          event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(["./"])));
+          self.skipWaiting();
+        });
+        self.addEventListener("activate", event => {
+          event.waitUntil(self.clients.claim());
+        });
+        self.addEventListener("fetch", event => {
+          event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
+        });
+      `;
+
+      const workerUrl = URL.createObjectURL(new Blob([workerCode], { type: "text/javascript" }));
+      navigator.serviceWorker.register(workerUrl).catch(() => {});
+    }
+
+    function setupInstallHint() {
+      const isStandalone = window.navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
+      const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+      if (isIos && !isStandalone) {
+        installCard.classList.add("show");
+      }
+    }
+
+    form.addEventListener("submit", addItem);
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => setActiveFilter(tab.dataset.filter));
+    });
+
+    setupPwaFiles();
+    setupServiceWorker();
+    setupInstallHint();
+    render();
+  </script>
+</body>
+</html>
