@@ -129,16 +129,28 @@
       flex: 0 0 34px;
       width: 34px;
       height: 34px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       border-radius: 999px;
       background: #f3f6f3;
       color: var(--muted);
-      line-height: 1;
-      font-size: 1rem;
       padding: 0;
-      transition: transform 160ms ease;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+
+    .chevron svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .chevron path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .section.collapsed .chevron {
@@ -390,12 +402,11 @@
       border: 1px solid var(--line);
       border-radius: 14px;
       background: rgba(255, 255, 255, 0.88);
-      padding: 6px 4px;
+      padding: 7px 4px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      gap: 4px;
+      justify-content: space-between;
       overflow: hidden;
       color: var(--text);
     }
@@ -424,14 +435,6 @@
       font-size: 0.86rem;
       font-weight: 900;
       line-height: 1;
-    }
-
-    .day-count {
-      color: var(--muted);
-      font-size: 0.64rem;
-      font-weight: 800;
-      line-height: 1;
-      min-height: 0.64rem;
     }
 
     .day-dots {
@@ -564,7 +567,11 @@
     <section class="section panel" data-section="form">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span>Add food</span>
-        <span class="chevron" aria-hidden="true">⌄</span>
+        <span class="chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 10l4 4 4-4" />
+          </svg>
+        </span>
       </button>
       <div class="section-body">
         <form id="itemForm" class="form-grid">
@@ -588,26 +595,14 @@
       </div>
     </section>
 
-    <section class="section" data-section="filters">
-      <button class="section-toggle" type="button" aria-expanded="true">
-        <span>Filters</span>
-        <span class="chevron" aria-hidden="true">⌄</span>
-      </button>
-      <div class="section-body">
-        <nav class="tabs" aria-label="Expiration filters">
-          <button class="tab active" type="button" data-filter="all">All</button>
-          <button class="tab" type="button" data-filter="7">7 days</button>
-          <button class="tab" type="button" data-filter="3">3 days</button>
-          <button class="tab" type="button" data-filter="1">1 day</button>
-          <button class="tab" type="button" data-filter="expired">Expired</button>
-        </nav>
-      </div>
-    </section>
-
     <section class="section panel" data-section="calendar">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span>Calendar</span>
-        <span class="chevron" aria-hidden="true">⌄</span>
+        <span class="chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 10l4 4 4-4" />
+          </svg>
+        </span>
       </button>
       <div class="section-body">
         <div class="calendar-shell">
@@ -624,10 +619,34 @@
       </div>
     </section>
 
+    <section class="section" data-section="filters">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span>Filters</span>
+        <span class="chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 10l4 4 4-4" />
+          </svg>
+        </span>
+      </button>
+      <div class="section-body">
+        <nav class="tabs" aria-label="Expiration filters">
+          <button class="tab active" type="button" data-filter="all">All</button>
+          <button class="tab" type="button" data-filter="7">7 days</button>
+          <button class="tab" type="button" data-filter="3">3 days</button>
+          <button class="tab" type="button" data-filter="1">1 day</button>
+          <button class="tab" type="button" data-filter="expired">Expired</button>
+        </nav>
+      </div>
+    </section>
+
     <section class="section panel" data-section="list">
       <button class="section-toggle" type="button" aria-expanded="true">
         <span>List</span>
-        <span class="chevron" aria-hidden="true">⌄</span>
+        <span class="chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 10l4 4 4-4" />
+          </svg>
+        </span>
       </button>
       <div class="section-body">
         <div class="summary">
@@ -836,7 +855,9 @@
       const firstDay = new Date(year, month, 1);
       const lastDay = new Date(year, month + 1, 0);
       const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      const filteredItems = getFilteredItems();
+      const calendarItems = [...items].sort((a, b) => {
+        return parseLocalDate(a.expirationDate) - parseLocalDate(b.expirationDate);
+      });
 
       monthTitle.textContent = firstDay.toLocaleDateString(undefined, {
         month: "long",
@@ -861,11 +882,10 @@
       for (let dayNumber = 1; dayNumber <= lastDay.getDate(); dayNumber++) {
         const date = new Date(year, month, dayNumber);
         const dateKey = toDateInputValue(date);
-        const dayItems = getItemsForDate(dateKey, filteredItems);
+        const dayItems = getItemsForDate(dateKey, calendarItems);
         const isToday = dateKey === toDateInputValue(getTodayDateOnly());
         const isSelected = dateKey === selectedCalendarDate;
         const priorityClass = getHighestPriorityClass(dayItems);
-        const countLabel = getCountLabel(dayItems.length);
         const day = document.createElement("button");
 
         day.type = "button";
@@ -877,7 +897,6 @@
 
         day.innerHTML = `
           <div class="day-number">${dayNumber}</div>
-          <div class="day-count">${countLabel || "&nbsp;"}</div>
           <div class="day-dots">
             ${renderDayDots(dayItems, priorityClass)}
           </div>
@@ -900,7 +919,7 @@
         calendar.appendChild(emptyDay);
       }
 
-      renderSelectedDayPanel(filteredItems);
+      renderSelectedDayPanel(calendarItems);
     }
 
     function getCountLabel(count) {
