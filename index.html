@@ -30,7 +30,7 @@
     }
 
     html {
-      height: 100%;
+      min-height: 100%;
       background: var(--bg);
     }
 
@@ -108,6 +108,7 @@
 
     .section-toggle {
       width: 100%;
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -115,7 +116,7 @@
       border: 0;
       background: transparent;
       color: var(--text);
-      padding: 4px 2px 12px;
+      padding: 2px 2px 12px;
       text-align: left;
       font-weight: 900;
     }
@@ -125,13 +126,18 @@
     }
 
     .chevron {
-      display: grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 999px;
       background: #f3f6f3;
       color: var(--muted);
+      line-height: 1;
+      font-size: 1rem;
+      padding: 0;
       transition: transform 160ms ease;
     }
 
@@ -204,7 +210,8 @@
     .primary-btn:active,
     .small-btn:active,
     .tab:active,
-    .section-toggle:active {
+    .section-toggle:active,
+    .day:active {
       transform: scale(0.985);
     }
 
@@ -212,7 +219,7 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 7px;
-      margin: 14px 0;
+      margin: 0;
     }
 
     .tab {
@@ -339,19 +346,24 @@
       font-size: 1.05rem;
     }
 
+    .calendar-shell {
+      display: grid;
+      gap: 14px;
+    }
+
     .calendar-controls {
-      display: flex;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
       align-items: center;
-      justify-content: space-between;
       gap: 10px;
-      margin-bottom: 12px;
     }
 
     .month-title {
       margin: 0;
       text-align: center;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 900;
+      line-height: 1.2;
     }
 
     .calendar-grid {
@@ -366,23 +378,31 @@
       font-weight: 900;
       text-align: center;
       text-transform: uppercase;
+      padding-bottom: 2px;
     }
 
     .day {
-      min-height: 74px;
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.88);
+      padding: 6px 4px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      border: 1px solid var(--line);
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 7px;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
       overflow: hidden;
+      color: var(--text);
     }
 
     .day.empty-day {
-      border-color: transparent;
-      background: transparent;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .day.today {
@@ -390,43 +410,114 @@
       box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
     }
 
+    .day.selected {
+      border-color: var(--green-dark);
+      box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+    }
+
+    .day.has-items {
+      background: #fbfdfb;
+    }
+
     .day-number {
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .day-count {
       color: var(--muted);
-      font-size: 0.78rem;
+      font-size: 0.64rem;
+      font-weight: 800;
+      line-height: 1;
+      min-height: 0.64rem;
+    }
+
+    .day-dots {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .day-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #bbf7d0;
+    }
+
+    .day-dot.good {
+      background: #86efac;
+    }
+
+    .day-dot.soon {
+      background: #fcd34d;
+    }
+
+    .day-dot.urgent,
+    .day-dot.expired {
+      background: #fca5a5;
+    }
+
+    .selected-day-panel {
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .selected-day-title {
+      margin: 0;
+      font-size: 1rem;
       font-weight: 900;
     }
 
-    .calendar-item {
-      width: 100%;
-      border: 0;
-      border-radius: 8px;
-      background: #dcfce7;
-      color: #166534;
-      padding: 5px 6px;
-      text-align: left;
-      font-size: 0.7rem;
-      font-weight: 800;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .calendar-item.soon {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .calendar-item.urgent,
-    .calendar-item.expired {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .more-items {
+    .selected-day-subtitle {
+      margin: 4px 0 0;
       color: var(--muted);
-      font-size: 0.68rem;
+      font-size: 0.9rem;
+    }
+
+    .selected-day-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .selected-day-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--card);
+      padding: 12px;
+    }
+
+    .selected-day-item-main {
+      min-width: 0;
+    }
+
+    .selected-day-item-name {
+      margin: 0;
+      font-size: 0.98rem;
       font-weight: 800;
-      padding-left: 2px;
+      overflow-wrap: anywhere;
+    }
+
+    .selected-day-item-meta {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .selected-day-empty {
+      color: var(--muted);
+      font-size: 0.92rem;
+      padding: 4px 0 2px;
     }
 
     .install-card {
@@ -519,12 +610,17 @@
         <span class="chevron" aria-hidden="true">⌄</span>
       </button>
       <div class="section-body">
-        <div class="calendar-controls">
-          <button id="prevMonth" class="small-btn" type="button">Prev</button>
-          <h2 id="monthTitle" class="month-title"></h2>
-          <button id="nextMonth" class="small-btn" type="button">Next</button>
+        <div class="calendar-shell">
+          <div class="calendar-controls">
+            <button id="prevMonth" class="small-btn" type="button">Prev</button>
+            <h2 id="monthTitle" class="month-title"></h2>
+            <button id="nextMonth" class="small-btn" type="button">Next</button>
+          </div>
+
+          <div id="calendar" class="calendar-grid" aria-live="polite"></div>
+
+          <div id="selectedDayPanel" class="selected-day-panel"></div>
         </div>
-        <div id="calendar" class="calendar-grid" aria-live="polite"></div>
       </div>
     </section>
 
@@ -562,10 +658,12 @@
     const monthTitle = document.getElementById("monthTitle");
     const prevMonth = document.getElementById("prevMonth");
     const nextMonth = document.getElementById("nextMonth");
+    const selectedDayPanel = document.getElementById("selectedDayPanel");
 
     let activeFilter = "all";
     let items = loadItems();
     let calendarDate = getTodayDateOnly();
+    let selectedCalendarDate = toDateInputValue(getTodayDateOnly());
     let sectionState = loadSectionState();
 
     function loadItems() {
@@ -647,6 +745,36 @@
       });
     }
 
+    function getItemsForDate(dateKey, sourceItems = getFilteredItems()) {
+      return sourceItems.filter((item) => item.expirationDate === dateKey);
+    }
+
+    function getHighestPriorityClass(dayItems) {
+      if (!dayItems.length) return "good";
+
+      let highest = "good";
+
+      dayItems.forEach((item) => {
+        const statusClass = getStatus(getDaysUntil(item.expirationDate)).className;
+
+        if (statusClass === "expired") {
+          highest = "expired";
+          return;
+        }
+
+        if (statusClass === "urgent" && highest !== "expired") {
+          highest = "urgent";
+          return;
+        }
+
+        if (statusClass === "soon" && highest !== "expired" && highest !== "urgent") {
+          highest = "soon";
+        }
+      });
+
+      return highest;
+    }
+
     function render() {
       renderList();
       renderCalendar();
@@ -707,10 +835,8 @@
       const month = calendarDate.getMonth();
       const firstDay = new Date(year, month, 1);
       const lastDay = new Date(year, month + 1, 0);
-      const todayKey = toDateInputValue(getTodayDateOnly());
-      const filteredItems = getFilteredItems();
-      const itemsByDate = groupItemsByDate(filteredItems);
       const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const filteredItems = getFilteredItems();
 
       monthTitle.textContent = firstDay.toLocaleDateString(undefined, {
         month: "long",
@@ -719,10 +845,10 @@
 
       calendar.innerHTML = "";
 
-      weekdays.forEach((day) => {
+      weekdays.forEach((dayName) => {
         const weekday = document.createElement("div");
         weekday.className = "weekday";
-        weekday.textContent = day;
+        weekday.textContent = dayName;
         calendar.appendChild(weekday);
       });
 
@@ -735,48 +861,113 @@
       for (let dayNumber = 1; dayNumber <= lastDay.getDate(); dayNumber++) {
         const date = new Date(year, month, dayNumber);
         const dateKey = toDateInputValue(date);
-        const dayItems = itemsByDate[dateKey] || [];
-        const day = document.createElement("div");
-        day.className = dateKey === todayKey ? "day today" : "day";
+        const dayItems = getItemsForDate(dateKey, filteredItems);
+        const isToday = dateKey === toDateInputValue(getTodayDateOnly());
+        const isSelected = dateKey === selectedCalendarDate;
+        const priorityClass = getHighestPriorityClass(dayItems);
+        const countLabel = getCountLabel(dayItems.length);
+        const day = document.createElement("button");
 
-        const label = document.createElement("div");
-        label.className = "day-number";
-        label.textContent = String(dayNumber);
-        day.appendChild(label);
+        day.type = "button";
+        day.className = "day";
 
-        dayItems.slice(0, 2).forEach((item) => {
-          const daysUntil = getDaysUntil(item.expirationDate);
-          const status = getStatus(daysUntil);
-          const itemButton = document.createElement("button");
-          itemButton.className = `calendar-item ${status.className}`;
-          itemButton.type = "button";
-          itemButton.textContent = item.name;
-          itemButton.title = `${item.name}, ${item.quantity}`;
-          itemButton.addEventListener("click", () => {
-            activeFilter = "all";
-            tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.filter === "all"));
-            renderList();
-          });
-          day.appendChild(itemButton);
+        if (dayItems.length > 0) day.classList.add("has-items");
+        if (isToday) day.classList.add("today");
+        if (isSelected) day.classList.add("selected");
+
+        day.innerHTML = `
+          <div class="day-number">${dayNumber}</div>
+          <div class="day-count">${countLabel || "&nbsp;"}</div>
+          <div class="day-dots">
+            ${renderDayDots(dayItems, priorityClass)}
+          </div>
+        `;
+
+        day.addEventListener("click", () => {
+          selectedCalendarDate = dateKey;
+          renderCalendar();
         });
-
-        if (dayItems.length > 2) {
-          const more = document.createElement("div");
-          more.className = "more-items";
-          more.textContent = `+${dayItems.length - 2} more`;
-          day.appendChild(more);
-        }
 
         calendar.appendChild(day);
       }
+
+      const totalSlots = firstDay.getDay() + lastDay.getDate();
+      const trailingSlots = (7 - (totalSlots % 7)) % 7;
+
+      for (let i = 0; i < trailingSlots; i++) {
+        const emptyDay = document.createElement("div");
+        emptyDay.className = "day empty-day";
+        calendar.appendChild(emptyDay);
+      }
+
+      renderSelectedDayPanel(filteredItems);
     }
 
-    function groupItemsByDate(sourceItems) {
-      return sourceItems.reduce((groups, item) => {
-        if (!groups[item.expirationDate]) groups[item.expirationDate] = [];
-        groups[item.expirationDate].push(item);
-        return groups;
-      }, {});
+    function getCountLabel(count) {
+      if (count === 0) return "";
+      if (count === 1) return "1 item";
+      return `${count} items`;
+    }
+
+    function renderDayDots(dayItems, priorityClass) {
+      if (!dayItems.length) return "";
+
+      return dayItems
+        .slice(0, 3)
+        .map(() => `<span class="day-dot ${priorityClass}"></span>`)
+        .join("");
+    }
+
+    function renderSelectedDayPanel(sourceItems) {
+      const dayItems = getItemsForDate(selectedCalendarDate, sourceItems);
+      const selectedDate = parseLocalDate(selectedCalendarDate);
+      const title = selectedDate.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+      const subtitle = getCountLabel(dayItems.length) || "No items";
+
+      selectedDayPanel.innerHTML = "";
+
+      const heading = document.createElement("div");
+      heading.innerHTML = `
+        <h3 class="selected-day-title">${title}</h3>
+        <p class="selected-day-subtitle">${subtitle} expire this day</p>
+      `;
+      selectedDayPanel.appendChild(heading);
+
+      if (dayItems.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "selected-day-empty";
+        empty.textContent = "No items for this day.";
+        selectedDayPanel.appendChild(empty);
+        return;
+      }
+
+      const listEl = document.createElement("div");
+      listEl.className = "selected-day-list";
+
+      dayItems.forEach((item) => {
+        const status = getStatus(getDaysUntil(item.expirationDate));
+        const card = document.createElement("div");
+        card.className = "selected-day-item";
+
+        card.innerHTML = `
+          <div class="selected-day-item-main">
+            <p class="selected-day-item-name"></p>
+            <p class="selected-day-item-meta"></p>
+          </div>
+          <span class="pill ${status.className}">${status.text}</span>
+        `;
+
+        card.querySelector(".selected-day-item-name").textContent = item.name;
+        card.querySelector(".selected-day-item-meta").textContent = item.quantity;
+        listEl.appendChild(card);
+      });
+
+      selectedDayPanel.appendChild(listEl);
     }
 
     function addItem(event) {
@@ -793,6 +984,8 @@
       if (!item.name || !item.expirationDate || !item.quantity) return;
 
       items.push(item);
+      selectedCalendarDate = item.expirationDate;
+      calendarDate = parseLocalDate(item.expirationDate);
       saveItems();
       form.reset();
       document.getElementById("name").focus();
