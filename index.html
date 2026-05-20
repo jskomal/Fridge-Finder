@@ -102,6 +102,51 @@
       backdrop-filter: blur(18px);
     }
 
+    .section {
+      margin-bottom: 14px;
+    }
+
+    .section-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 4px 2px 12px;
+      text-align: left;
+      font-weight: 900;
+    }
+
+    .section-toggle span:first-child {
+      font-size: 1.05rem;
+    }
+
+    .chevron {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: #f3f6f3;
+      color: var(--muted);
+      transition: transform 160ms ease;
+    }
+
+    .section.collapsed .chevron {
+      transform: rotate(-90deg);
+    }
+
+    .section-body {
+      display: block;
+    }
+
+    .section.collapsed .section-body {
+      display: none;
+    }
+
     .form-grid {
       display: grid;
       gap: 10px;
@@ -156,7 +201,10 @@
       box-shadow: 0 12px 22px rgba(34, 197, 94, 0.22);
     }
 
-    .primary-btn:active {
+    .primary-btn:active,
+    .small-btn:active,
+    .tab:active,
+    .section-toggle:active {
       transform: scale(0.985);
     }
 
@@ -263,7 +311,8 @@
       font-size: 0.9rem;
     }
 
-    .delete-btn {
+    .delete-btn,
+    .small-btn {
       border: 0;
       border-radius: 999px;
       background: #f3f6f3;
@@ -271,6 +320,10 @@
       padding: 8px 11px;
       font-size: 0.82rem;
       font-weight: 900;
+    }
+
+    .small-btn {
+      color: var(--green-dark);
     }
 
     .empty {
@@ -284,6 +337,96 @@
       margin-bottom: 6px;
       color: var(--text);
       font-size: 1.05rem;
+    }
+
+    .calendar-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .month-title {
+      margin: 0;
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .weekday {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .day {
+      min-height: 74px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 7px;
+      overflow: hidden;
+    }
+
+    .day.empty-day {
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .day.today {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+    }
+
+    .day-number {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .calendar-item {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      background: #dcfce7;
+      color: #166534;
+      padding: 5px 6px;
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .calendar-item.soon {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .calendar-item.urgent,
+    .calendar-item.expired {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .more-items {
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding-left: 2px;
     }
 
     .install-card {
@@ -327,41 +470,76 @@
       <div class="badge" aria-hidden="true">🥬</div>
     </header>
 
-    <section class="panel" aria-label="Add fridge item">
-      <form id="itemForm" class="form-grid">
-        <div class="field name">
-          <label for="name">Food name</label>
-          <input id="name" name="name" type="text" placeholder="Milk, chicken, spinach" autocomplete="off" required />
-        </div>
+    <section class="section panel" data-section="form">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span>Add food</span>
+        <span class="chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="section-body">
+        <form id="itemForm" class="form-grid">
+          <div class="field name">
+            <label for="name">Food name</label>
+            <input id="name" name="name" type="text" placeholder="Milk, chicken, spinach" autocomplete="off" required />
+          </div>
 
-        <div class="field">
-          <label for="expirationDate">Expiration date</label>
-          <input id="expirationDate" name="expirationDate" type="date" required />
-        </div>
+          <div class="field">
+            <label for="expirationDate">Expiration date</label>
+            <input id="expirationDate" name="expirationDate" type="date" required />
+          </div>
 
-        <div class="field">
-          <label for="quantity">Quantity</label>
-          <input id="quantity" name="quantity" type="text" placeholder="1 carton, 2 lbs, half bag" autocomplete="off" required />
-        </div>
+          <div class="field">
+            <label for="quantity">Quantity</label>
+            <input id="quantity" name="quantity" type="text" placeholder="1 carton, 2 lbs, half bag" autocomplete="off" required />
+          </div>
 
-        <button class="primary-btn" type="submit">Add Item</button>
-      </form>
+          <button class="primary-btn" type="submit">Add Item</button>
+        </form>
+      </div>
     </section>
 
-    <nav class="tabs" aria-label="Expiration filters">
-      <button class="tab active" type="button" data-filter="all">All</button>
-      <button class="tab" type="button" data-filter="7">7 days</button>
-      <button class="tab" type="button" data-filter="3">3 days</button>
-      <button class="tab" type="button" data-filter="1">1 day</button>
-      <button class="tab" type="button" data-filter="expired">Expired</button>
-    </nav>
-
-    <section class="panel">
-      <div class="summary">
-        <span id="summaryText">0 items</span>
-        <span id="todayText"></span>
+    <section class="section" data-section="filters">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span>Filters</span>
+        <span class="chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="section-body">
+        <nav class="tabs" aria-label="Expiration filters">
+          <button class="tab active" type="button" data-filter="all">All</button>
+          <button class="tab" type="button" data-filter="7">7 days</button>
+          <button class="tab" type="button" data-filter="3">3 days</button>
+          <button class="tab" type="button" data-filter="1">1 day</button>
+          <button class="tab" type="button" data-filter="expired">Expired</button>
+        </nav>
       </div>
-      <div id="list" class="list" aria-live="polite"></div>
+    </section>
+
+    <section class="section panel" data-section="calendar">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span>Calendar</span>
+        <span class="chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="section-body">
+        <div class="calendar-controls">
+          <button id="prevMonth" class="small-btn" type="button">Prev</button>
+          <h2 id="monthTitle" class="month-title"></h2>
+          <button id="nextMonth" class="small-btn" type="button">Next</button>
+        </div>
+        <div id="calendar" class="calendar-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section panel" data-section="list">
+      <button class="section-toggle" type="button" aria-expanded="true">
+        <span>List</span>
+        <span class="chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="section-body">
+        <div class="summary">
+          <span id="summaryText">0 items</span>
+          <span id="todayText"></span>
+        </div>
+        <div id="list" class="list" aria-live="polite"></div>
+      </div>
     </section>
 
     <section id="installCard" class="panel install-card">
@@ -372,6 +550,7 @@
 
   <script>
     const STORAGE_KEY = "fridgeFinderItems";
+    const SECTION_STATE_KEY = "fridgeFinderSections";
 
     const form = document.getElementById("itemForm");
     const list = document.getElementById("list");
@@ -379,9 +558,15 @@
     const summaryText = document.getElementById("summaryText");
     const todayText = document.getElementById("todayText");
     const installCard = document.getElementById("installCard");
+    const calendar = document.getElementById("calendar");
+    const monthTitle = document.getElementById("monthTitle");
+    const prevMonth = document.getElementById("prevMonth");
+    const nextMonth = document.getElementById("nextMonth");
 
     let activeFilter = "all";
     let items = loadItems();
+    let calendarDate = getTodayDateOnly();
+    let sectionState = loadSectionState();
 
     function loadItems() {
       try {
@@ -395,6 +580,18 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
 
+    function loadSectionState() {
+      try {
+        return JSON.parse(localStorage.getItem(SECTION_STATE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveSectionState() {
+      localStorage.setItem(SECTION_STATE_KEY, JSON.stringify(sectionState));
+    }
+
     function getTodayDateOnly() {
       const now = new Date();
       return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -403,6 +600,13 @@
     function parseLocalDate(dateString) {
       const [year, month, day] = dateString.split("-").map(Number);
       return new Date(year, month - 1, day);
+    }
+
+    function toDateInputValue(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     }
 
     function formatDate(dateString) {
@@ -424,7 +628,6 @@
       if (daysUntil < 0) return { text: "Expired", className: "expired" };
       if (daysUntil === 0) return { text: "Today", className: "urgent" };
       if (daysUntil === 1) return { text: "1 day", className: "urgent" };
-      if (daysUntil <= 3) return { text: `${daysUntil} days`, className: "soon" };
       if (daysUntil <= 7) return { text: `${daysUntil} days`, className: "soon" };
       return { text: `${daysUntil} days`, className: "good" };
     }
@@ -445,6 +648,11 @@
     }
 
     function render() {
+      renderList();
+      renderCalendar();
+    }
+
+    function renderList() {
       const filteredItems = getFilteredItems();
       const label = filteredItems.length === 1 ? "item" : "items";
 
@@ -494,6 +702,83 @@
       });
     }
 
+    function renderCalendar() {
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const todayKey = toDateInputValue(getTodayDateOnly());
+      const filteredItems = getFilteredItems();
+      const itemsByDate = groupItemsByDate(filteredItems);
+      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+      monthTitle.textContent = firstDay.toLocaleDateString(undefined, {
+        month: "long",
+        year: "numeric"
+      });
+
+      calendar.innerHTML = "";
+
+      weekdays.forEach((day) => {
+        const weekday = document.createElement("div");
+        weekday.className = "weekday";
+        weekday.textContent = day;
+        calendar.appendChild(weekday);
+      });
+
+      for (let i = 0; i < firstDay.getDay(); i++) {
+        const emptyDay = document.createElement("div");
+        emptyDay.className = "day empty-day";
+        calendar.appendChild(emptyDay);
+      }
+
+      for (let dayNumber = 1; dayNumber <= lastDay.getDate(); dayNumber++) {
+        const date = new Date(year, month, dayNumber);
+        const dateKey = toDateInputValue(date);
+        const dayItems = itemsByDate[dateKey] || [];
+        const day = document.createElement("div");
+        day.className = dateKey === todayKey ? "day today" : "day";
+
+        const label = document.createElement("div");
+        label.className = "day-number";
+        label.textContent = String(dayNumber);
+        day.appendChild(label);
+
+        dayItems.slice(0, 2).forEach((item) => {
+          const daysUntil = getDaysUntil(item.expirationDate);
+          const status = getStatus(daysUntil);
+          const itemButton = document.createElement("button");
+          itemButton.className = `calendar-item ${status.className}`;
+          itemButton.type = "button";
+          itemButton.textContent = item.name;
+          itemButton.title = `${item.name}, ${item.quantity}`;
+          itemButton.addEventListener("click", () => {
+            activeFilter = "all";
+            tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.filter === "all"));
+            renderList();
+          });
+          day.appendChild(itemButton);
+        });
+
+        if (dayItems.length > 2) {
+          const more = document.createElement("div");
+          more.className = "more-items";
+          more.textContent = `+${dayItems.length - 2} more`;
+          day.appendChild(more);
+        }
+
+        calendar.appendChild(day);
+      }
+    }
+
+    function groupItemsByDate(sourceItems) {
+      return sourceItems.reduce((groups, item) => {
+        if (!groups[item.expirationDate]) groups[item.expirationDate] = [];
+        groups[item.expirationDate].push(item);
+        return groups;
+      }, {});
+    }
+
     function addItem(event) {
       event.preventDefault();
 
@@ -528,6 +813,27 @@
       });
 
       render();
+    }
+
+    function setupSectionToggles() {
+      document.querySelectorAll(".section").forEach((section) => {
+        const sectionName = section.dataset.section;
+        const toggle = section.querySelector(".section-toggle");
+
+        if (!toggle || !sectionName) return;
+
+        if (sectionState[sectionName] === false) {
+          section.classList.add("collapsed");
+          toggle.setAttribute("aria-expanded", "false");
+        }
+
+        toggle.addEventListener("click", () => {
+          const isCollapsed = section.classList.toggle("collapsed");
+          sectionState[sectionName] = !isCollapsed;
+          toggle.setAttribute("aria-expanded", String(!isCollapsed));
+          saveSectionState();
+        });
+      });
     }
 
     function setupPwaFiles() {
@@ -604,6 +910,17 @@
       tab.addEventListener("click", () => setActiveFilter(tab.dataset.filter));
     });
 
+    prevMonth.addEventListener("click", () => {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+      renderCalendar();
+    });
+
+    nextMonth.addEventListener("click", () => {
+      calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1);
+      renderCalendar();
+    });
+
+    setupSectionToggles();
     setupPwaFiles();
     setupServiceWorker();
     setupInstallHint();
